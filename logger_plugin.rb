@@ -7,7 +7,7 @@ class LoggerPlugin
     ERROR_LIMIT = 3
 
     # Set a timer to read log file
-    timer 5, method: :tail
+    timer 15, method: :tail
 
     def initialize(*args)
         super
