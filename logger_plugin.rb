@@ -24,13 +24,14 @@ class LoggerPlugin
             return true
         rescue StandardError => e
             error "Unable to monitor file: #{config[:log]} with error #{e.message}."
+            @file.close if not @file.nil?
         end
         return false
     end
 
     # Check the existence of the file and if we currently have it open
     def exists_and_open?
-        File.exists?(config[:log]) and not @file.nil?
+        File.exists?(config[:log]) and not @file.nil? and not @file.closed?
     end
 
     # Read new file lines and output
