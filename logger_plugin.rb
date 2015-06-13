@@ -12,6 +12,7 @@ class LoggerPlugin
     def initialize(*args)
         super
         open
+        @count = 0
     end
 
     # Open the file
@@ -39,9 +40,10 @@ class LoggerPlugin
             @file.readlines.each{|l| output(l) }
         else
             # Try open it again
-            open
-            # Check we were able to open the file
-            output("[ERROR] Unable to open log file: #{config[:log]}.") and destroy if not exists_and_open?
+            if not open
+                output("[ERROR] Unable to open log file: #{config[:log]}.") if @count != LoggerPlugin::ERROR_LIMIT
+                destroy
+            end
         end
     end
 
@@ -54,7 +56,7 @@ class LoggerPlugin
     # Note: Allow bot to output error message until LoggerPlugin::ERROR_LIMIT is reached
     def destroy
         @count += 1
-        if @count == LoggerPlugin::ERROR_LIMIT
+        if @count > LoggerPlugin::ERROR_LIMIT
             output("[FATAL] Stopped monitoring: #{config[:log]}.")
             @file.nil?timers.each{|t| t.stop }
         end
