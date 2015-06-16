@@ -50,7 +50,7 @@ class LoggerPlugin
 
     # Output message to all configured channels
     def output(msg)
-        config[:channels].each{|c| Channel(c).send(msg) }
+        config[:channels].each{|c| Channel(c.split.first).send(msg) }
     end
 
     # Destroy timers
